@@ -42,18 +42,12 @@ CREATE TABLE "Product" (
 CREATE TABLE "CreditProfile" (
   "id" SERIAL PRIMARY KEY,
   "header_id" int,
-  "risk_model_ids" varchar,
-  "consumer_identity_ids" varchar,
-  "address_info_ids" varchar,
-  "employment_info_ids" varchar,
-  "trade_line_ids" varchar,
-  "inquiry_ids" varchar,
-  "info_message_ids" varchar
+  "inquiry_id" varchar
 );
 
 CREATE TABLE "Header" (
   "id" SERIAL PRIMARY KEY,
-  "ReportDate" int,
+  "ReportDate" datetime,
   "ReportTime" int,
   "Preamble" varchar,
   "ARFVersion" char
@@ -61,6 +55,7 @@ CREATE TABLE "Header" (
 
 CREATE TABLE "RiskModel" (
   "id" SERIAL PRIMARY KEY,
+  "CredicProfile_id" varchar,
   "ModelIndicator_code" char,
   "Score" int,
   "ScoreFactorCodeOne" char,
@@ -72,6 +67,7 @@ CREATE TABLE "RiskModel" (
 
 CREATE TABLE "ConsumerIdentity" (
   "id" SERIAL PRIMARY KEY,
+  "CredicProfile_id" varchar,
   "Type_code" char,
   "Surname" varchar,
   "First" varchar,
@@ -82,8 +78,9 @@ CREATE TABLE "ConsumerIdentity" (
 
 CREATE TABLE "AddressInfo" (
   "id" SERIAL PRIMARY KEY,
-  "FirstReportedDate" int,
-  "LastUpdatedDate" int,
+  "CredicProfile_id" varchar,
+  "FirstReportedDate" datetime,
+  "LastUpdatedDate" datetime,
   "Origination_code" char,
   "TimesReported" int,
   "LastReportingSubcode" int,
@@ -100,8 +97,9 @@ CREATE TABLE "AddressInfo" (
 
 CREATE TABLE "EmploymentInfo" (
   "id" SERIAL PRIMARY KEY,
-  "FirstReportedDate" int,
-  "LastUpdatedDate" int,
+  "CredicProfile_id" varchar,
+  "FirstReportedDate" datetime,
+  "LastUpdatedDate" datetime,
   "Origination_code" char,
   "Name" varchar,
   "AddressFirstLine" varchar,
@@ -112,16 +110,16 @@ CREATE TABLE "EmploymentInfo" (
 
 CREATE TABLE "TradeLine" (
   "id" SERIAL PRIMARY KEY,
+  "CredicProfile_id" varchar,
   "SpecialComment_code" char,
   "Evaluation_code" char,
-  "OpenDate" int,
+  "OpenDate" datetime,
   "StatusDate" int,
-  "MaxDelinquencyDate" int,
+  "MaxDelinquencyDate" datetime,
   "AccountType_code" char,
   "TermsDuration_code" char,
   "ECOA_code" char,
-  "Amount" varchar,
-  "BalanceDate" int,
+  "BalanceDate" datetime,
   "BalanceAmount" int,
   "Status_code" char,
   "AmountPastDue" varchar,
@@ -136,11 +134,18 @@ CREATE TABLE "TradeLine" (
   "PaymentProfile" varchar,
   "MonthlyPaymentAmount" int,
   "MonthlyPaymentType_code" char,
-  "LastPaymentDate" int,
+  "LastPaymentDate" datetime,
   "Subcode" int,
   "KOB_code" char,
   "SubscriberDisplayName" varchar,
   "EnhancedPaymentData_id" int
+);
+
+CREATE TABLE "TradeLineAmount" (
+  "id" SERIAL PRIMARY KEY,
+  "TradeLine_id" varchar,
+  "Qualifier_code" char,
+  "Value" int
 );
 
 CREATE TABLE "EnhancedPaymentData" (
@@ -165,6 +170,7 @@ CREATE TABLE "Inquiry" (
 
 CREATE TABLE "InformationalMessage" (
   "id" SERIAL PRIMARY KEY,
+  "CredicProfile_id" varchar,
   "MessageNumber" int,
   "MessageText" text
 );
@@ -177,18 +183,20 @@ ALTER TABLE "XML_Detail" ADD FOREIGN KEY ("id") REFERENCES "PrequalResult" ("xml
 
 ALTER TABLE "Header" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("header_id");
 
-ALTER TABLE "RiskModel" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("risk_model_ids");
-
-ALTER TABLE "ConsumerIdentity" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("consumer_identity_ids");
-
-ALTER TABLE "AddressInfo" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("address_info_ids");
-
-ALTER TABLE "EmploymentInfo" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("employment_info_ids");
-
-ALTER TABLE "TradeLine" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("trade_line_ids");
-
 ALTER TABLE "EnhancedPaymentData" ADD FOREIGN KEY ("id") REFERENCES "TradeLine" ("EnhancedPaymentData_id");
 
-ALTER TABLE "Inquiry" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("inquiry_ids");
+ALTER TABLE "Inquiry" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("inquiry_id");
 
-ALTER TABLE "InformationalMessage" ADD FOREIGN KEY ("id") REFERENCES "CreditProfile" ("info_message_ids");
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "RiskModel" ("CredicProfile_id");
+
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "ConsumerIdentity" ("CredicProfile_id");
+
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "AddressInfo" ("CredicProfile_id");
+
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "EmploymentInfo" ("CredicProfile_id");
+
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "TradeLine" ("CredicProfile_id");
+
+ALTER TABLE "CreditProfile" ADD FOREIGN KEY ("id") REFERENCES "InformationalMessage" ("CredicProfile_id");
+
+ALTER TABLE "TradeLine" ADD FOREIGN KEY ("id") REFERENCES "TradeLineAmount" ("TradeLine_id");
