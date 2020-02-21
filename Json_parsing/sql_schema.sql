@@ -114,7 +114,7 @@ CREATE TABLE "TradeLine" (
   "SpecialComment_code" char,
   "Evaluation_code" char,
   "OpenDate" datetime,
-  "StatusDate" int,
+  "StatusDate" datetime,
   "MaxDelinquencyDate" datetime,
   "AccountType_code" char,
   "TermsDuration_code" char,
