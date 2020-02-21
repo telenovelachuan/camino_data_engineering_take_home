@@ -4,16 +4,23 @@ Kafka could be used here to perform as a streaming data receiver, which provides
 A real-time processing engine works as the Kafka consumer here to handle and preprocess incoming streaming data. It does the JSON parsing here, as well as other real time tasks such as data monitoring and alarm notification.
 The parsed JSON data can be utilized in 2 ways, which corresponds to 2 business scenarios: online decision and offline analytics.
 
-###### Online Decision
+- Online Decision
 
 This is a real time data scenario that is sensitive to response time. Structured data after parsing are fed into data warehouses such as Teradata and online web services like AWS and Cloudera, where real time analysis could be enabled by data warehouse OLAP APIs.
 
-###### Offline Analytics
+- Offline Analytics
 
 For non real-time scenarios, common big data platforms could be used for data redundancy, and offline analytics such as training model, mining user behavior, etc.
 The parsed data can be fed into platforms like Hadoop HDFS and Hive using Spark, Flume or Kafka API. These platforms can store both structured data and raw files to provide data redundancy.
 
 Finally, various kinds of applications can make use of the data stored in these 2 ways. Customer related apps such as decision making take advantage of OLAP services, while offline apps such as data QA, risk modeling, automated pipelines, etc. will be the consumer of big data computing platforms.
+
+To summarize for an end-to-end data ETL process:
+
+###### tool of choice
+
+Apache Kafka with ZooKeeper, Python for data parsing(can switch to C/C++ if data throughput bulges), Teradata for online decision, Hadoop for offline analytics and Spark for customized data import into Hadoop(PySpark is great to integrate Python parser).
+
 
 
 
