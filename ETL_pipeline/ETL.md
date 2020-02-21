@@ -17,10 +17,18 @@ Finally, various kinds of applications can make use of the data stored in these 
 
 To summarize for an end-to-end data ETL process:
 
-###### tool of choice
+###### Tool of choice
 
 Apache Kafka with ZooKeeper, Python for data parsing(can switch to C/C++ if data throughput bulges), Teradata for online decision, Hadoop for offline analytics and Spark for customized data import into Hadoop(PySpark is great to integrate Python parser).
 
+###### Processing frequency
 
+For real-time scenarios, data should be updated for a higher frequency such as hourly or even half hourly, depending on its business criticality. With the increasing amount of incoming JSON data, parsing engine could be replaced by C/C++ as well.
 
+For offline analytics, updates of some model scores could be much less frequent, varying from daily to weekly.
+
+###### Cost
+
+A large cost would be the bottleneck of data parsing engine. With the increase of the amount of incoming JSON data, some more efficient choices such as C/C++ or even distributed methodologies such as Spark should be preferred. 
+Economically, the main costs here are the Kafka cluster(purchasing and maintaining so many servers would be expensive), and platform fees such as Teradata, Oracle and AWS.
 
